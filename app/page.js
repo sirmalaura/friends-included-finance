@@ -39,7 +39,7 @@ export default function Page() {
       <h1>Wedding guests, accounted for.</h1>
       <p>Service delivered. Sale reported. Decisions recorded. Laura Sirmā’s Day 4 homework.</p>
       <div className="heroLinks">
-        <a href="https://t.me/weeeedingbot" target="_blank">Telegram bot ↗</a>
+        <a href="https://t.me/weeeeding_bot" target="_blank">Telegram bot ↗</a>
         <a href={process.env.NEXT_PUBLIC_SHEETS_URL||'#'} target="_blank">Sales & Expenses sheet ↗</a>
         <a href={process.env.NEXT_PUBLIC_GITHUB_URL||'#'} target="_blank">GitHub source ↗</a>
       </div>
