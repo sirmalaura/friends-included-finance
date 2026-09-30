@@ -55,10 +55,19 @@ create table if not exists expenses (
   notification_error text
 );
 
+create table if not exists test_checkpoints (
+  label text primary key check (label in ('Test 1','Test 2')),
+  summary jsonb not null,
+  captured_at timestamptz not null default now()
+);
+
 create index if not exists sales_status_idx on sales(status);
 create index if not exists expenses_status_idx on expenses(status);
 alter table employees enable row level security;
 alter table telegram_links enable row level security;
 alter table sales enable row level security;
 alter table expenses enable row level security;
+alter table test_checkpoints enable row level security;
 -- No anonymous policies: clients cannot bypass the server processing layer.
+grant usage on schema public to service_role;
+grant select, insert, update, delete on table public.employees, public.telegram_links, public.sales, public.expenses, public.test_checkpoints to service_role;

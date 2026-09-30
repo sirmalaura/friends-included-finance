@@ -12,6 +12,7 @@ export async function GET(request) {
     return NextResponse.json({
       sales:all.sales.filter(x=>x.salesperson===role),
       expenses:all.expenses.filter(x=>x.reporter===role),
+      checkpoints:all.checkpoints,
       summary:null
     });
   } catch(e) { return NextResponse.json({error:e.message},{status:400}); }
@@ -32,6 +33,14 @@ export async function POST(request) {
       case 'retryNotification':
         requireRole(actor,['Svetlana']);
         result=await notifyDecision(body.type,body.reference); break;
+      case 'captureCheckpoint': {
+        requireRole(actor,['Svetlana']);
+        if(!['Test 1','Test 2'].includes(body.label)) throw Error('Invalid checkpoint.');
+        const all=await allRecords();
+        const {data,error}=await db().from('test_checkpoints').insert({label:body.label,summary:summarize(all.sales,all.expenses)}).select().single();
+        if(error) throw Error(error.code==='23505'?'This checkpoint was already captured.':error.message);
+        result=data;break;
+      }
       case 'setupWebhook': {
         requireRole(actor,['Svetlana']);
         if(!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_WEBHOOK_SECRET) throw Error('Telegram environment variables are missing.');
